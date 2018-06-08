@@ -11,4 +11,7 @@ public interface DiscountService {
      */
     List<Discount> getDiscounts();
 
+
+    Discount addDiscount(Discount discount);
+
 }

@@ -11,6 +11,6 @@ public class CheckoutServiceImplTest {
     }
 
     @org.junit.Test
-    public void checkout() {
+    public void scenario() {
     }
 }
