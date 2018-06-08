@@ -79,7 +79,26 @@ public class StepsDefs implements En {
         });
 
         Given("I add the following to my basket:", (DataTable dataTable) -> {
+            dataTable.asMaps(String.class, String.class).forEach(
+                    row -> {
+                        String productName = row.get("name").toString();
+                        Integer quantity = Integer.parseInt(row.get("qty").toString());
 
+                        Optional<Product> productOptional = productService.getProduct(productName);
+
+                        assertThat(productOptional.isPresent()).isTrue();
+                        assertThat(productOptional.get())
+                                .isNotNull()
+                                .hasFieldOrPropertyWithValue("name", productName);
+
+                        assertThat(basket.add(productOptional.get(), quantity))
+                                .isNotNull();
+
+                        assertThat(basket.getContents())
+                                .filteredOn("name", productName)
+                                .size().isEqualTo(quantity);
+                    }
+            );
         });
 
         When("^I checkout$", () -> {
