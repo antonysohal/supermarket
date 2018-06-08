@@ -5,9 +5,18 @@ import java.math.BigDecimal;
 public interface Discount {
 
     /**
-     * Returns the price of discount
-     *
+     * Returns the value of discount
      * @return a negative number
      */
-    BigDecimal getPrice();
+    BigDecimal getValue();
+
+
+    /**
+     * Return unique name of discount
+     *
+     * @return
+     */
+    String getName();
+
+
 }

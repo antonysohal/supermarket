@@ -1,6 +1,10 @@
 package com.antonysohal.supermarket.discount;
 
+import com.antonysohal.supermarket.product.Product;
+
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface DiscountService {
 
@@ -12,6 +16,5 @@ public interface DiscountService {
     List<Discount> getDiscounts();
 
 
-    Discount addDiscount(Discount discount);
-
+    Optional<Discount> createDiscount(String name, BigDecimal discountValue, Product product, Integer quantity);
 }
