@@ -4,9 +4,14 @@ import com.antonysohal.supermarket.basket.Basket;
 import com.antonysohal.supermarket.basket.BasketService;
 import com.antonysohal.supermarket.basket.BasketServiceImpl;
 import com.antonysohal.supermarket.discount.DiscountService;
+import com.antonysohal.supermarket.product.Product;
 import com.antonysohal.supermarket.product.ProductService;
+import com.antonysohal.supermarket.product.ProductServiceImpl;
 import cucumber.api.java8.En;
 import io.cucumber.datatable.DataTable;
+
+import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +21,7 @@ public class StepsDefs implements En {
 
     Basket basket;
 
-    ProductService productService;
+    ProductService productService = ProductServiceImpl.getInstance();
 
     DiscountService discountService;
 
@@ -32,7 +37,19 @@ public class StepsDefs implements En {
         });
 
         Given("the following products exist:", (DataTable dataTable) -> {
+            dataTable.asMaps(String.class, String.class).forEach(
+                    row -> {
+                        Optional<Product> productOptional = productService.createProduct(row.get("name").toString(),
+                                new BigDecimal(row.get("price").toString()), null);
 
+                        // Test product created
+                        assertThat(productOptional.isPresent()).isTrue();
+                        assertThat(productOptional.get())
+                                .isNotNull()
+                                .hasFieldOrPropertyWithValue("name", row.get("name"))
+                                .hasFieldOrPropertyWithValue("price", new BigDecimal(row.get("price").toString()));
+                    }
+            );
         });
 
         Given("the following discounts exist:", (DataTable dataTable) -> {
