@@ -18,4 +18,4 @@ Feature: Checkout
       | Apple       | 1   |
     When I checkout
     Then my total discount should be -1.57
-    And my total should be 9.44
+    And my total should be 8.45

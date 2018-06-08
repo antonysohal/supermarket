@@ -2,7 +2,6 @@ package com.antonysohal.supermarket.basket;
 
 public class BasketServiceImpl implements BasketService {
 
-
     private static BasketService SINGLETON;
 
     BasketServiceImpl() {

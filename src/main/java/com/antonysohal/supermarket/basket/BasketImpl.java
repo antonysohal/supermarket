@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BasketImpl implements Basket {
+/**
+ * Basket Implementation
+ */
+class BasketImpl implements Basket {
 
     List<Product> basket = new ArrayList<>();
 
@@ -23,5 +26,10 @@ public class BasketImpl implements Basket {
 
     public List<Product> getContents() {
         return Collections.unmodifiableList(basket);
+    }
+
+    @Override
+    public String toString() {
+        return "basket=" + basket;
     }
 }

@@ -1,4 +1,4 @@
-package com.antonysohal.supermarket;
+package com.antonysohal.supermarket.checkout;
 
 import java.math.BigDecimal;
 

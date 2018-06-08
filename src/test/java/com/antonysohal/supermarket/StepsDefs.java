@@ -3,6 +3,9 @@ package com.antonysohal.supermarket;
 import com.antonysohal.supermarket.basket.Basket;
 import com.antonysohal.supermarket.basket.BasketService;
 import com.antonysohal.supermarket.basket.BasketServiceImpl;
+import com.antonysohal.supermarket.checkout.CheckoutService;
+import com.antonysohal.supermarket.checkout.CheckoutServiceImpl;
+import com.antonysohal.supermarket.checkout.Receipt;
 import com.antonysohal.supermarket.discount.Discount;
 import com.antonysohal.supermarket.discount.DiscountService;
 import com.antonysohal.supermarket.discount.DiscountServiceImpl;
@@ -13,6 +16,8 @@ import cucumber.api.java8.En;
 import io.cucumber.datatable.DataTable;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,9 +30,9 @@ public class StepsDefs implements En {
 
     ProductService productService = ProductServiceImpl.getInstance();
 
-    DiscountService discountService = DiscountServiceImpl.getInstace();
+    DiscountService discountService = DiscountServiceImpl.getInstance();
 
-    CheckoutService checkoutService;
+    CheckoutService checkoutService = CheckoutServiceImpl.getInstance();
 
     Receipt receipt;
 
@@ -67,13 +72,15 @@ public class StepsDefs implements En {
                                 productOptional.get(),
                                 Integer.parseInt(row.get("qty").toString()));
 
+                        Map<Product, Integer> expectedCriteria = new HashMap<>();
+                        expectedCriteria.put(productOptional.get(), Integer.parseInt(row.get("qty").toString()));
+
                         assertThat(discountOptional.isPresent()).isTrue();
                         assertThat(discountOptional.get())
                                 .isNotNull()
                                 .hasFieldOrPropertyWithValue("name", row.get("name").toString())
                                 .hasFieldOrPropertyWithValue("value", new BigDecimal(row.get("discount").toString()))
-                                .hasFieldOrPropertyWithValue("product", productOptional.get())
-                                .hasFieldOrPropertyWithValue("quantity", Integer.parseInt(row.get("qty").toString()));
+                                .hasFieldOrPropertyWithValue("criteria", expectedCriteria);
                     }
             );
         });
@@ -108,12 +115,12 @@ public class StepsDefs implements En {
         Then("my total discount should be {double}", (Double expectedDiscount) -> {
             assertThat(receipt)
                     .isNotNull()
-                    .hasFieldOrPropertyWithValue("totalDiscount", expectedDiscount);
+                    .hasFieldOrPropertyWithValue("totalDiscount", BigDecimal.valueOf(expectedDiscount));
         });
 
         Then("my total should be {double}", (Double expectedTotal) -> {
             assertThat(receipt)
-                    .hasFieldOrPropertyWithValue("total", expectedTotal);
+                    .hasFieldOrPropertyWithValue("total", BigDecimal.valueOf(expectedTotal));
         });
     }
 

@@ -1,4 +1,4 @@
-package com.antonysohal.supermarket;
+package com.antonysohal.supermarket.checkout;
 
 import com.antonysohal.supermarket.basket.Basket;
 
@@ -11,5 +11,4 @@ public interface CheckoutService {
      * @return the receipt
      */
     Receipt checkout(Basket basket);
-
 }

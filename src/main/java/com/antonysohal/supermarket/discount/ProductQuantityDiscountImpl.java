@@ -3,21 +3,23 @@ package com.antonysohal.supermarket.discount;
 import com.antonysohal.supermarket.product.Product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-public class ProductQuantityDiscountImpl implements ProductQuantityDiscount {
+class ProductQuantityDiscountImpl implements Discount {
 
     protected BigDecimal value;
-    protected Product product;
-    protected Integer quantity;
     protected String name;
+    protected Map<Product, Integer> criteria;
 
 
-    ProductQuantityDiscountImpl(String name, Product product, Integer quantity, BigDecimal value) {
+    ProductQuantityDiscountImpl(String name, Map<Product, Integer> criteria, BigDecimal value) {
         setName(name);
-        setProduct(product);
-        setQuantity(quantity);
         setValue(value);
+        setCriteria(criteria);
     }
 
 
@@ -28,17 +30,34 @@ public class ProductQuantityDiscountImpl implements ProductQuantityDiscount {
         this.value = value;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    @Override
+    public boolean canApply(Map<Product, Integer> productWithQuantity) {
+        return productWithQuantity.keySet().containsAll(getProducts()) &&
+                productWithQuantity.entrySet().stream().allMatch(e -> {
+                    Integer passedQuantity = e.getValue();
+                    //provide default value of 0 as the product may not exist in criteria
+                    Integer criteriaQuantity = criteria.getOrDefault(e.getKey(), 0);
+                    return (criteriaQuantity.compareTo(passedQuantity) <= 0);
+                });
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    @Override
+    public Map<Product, Integer> getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(Map<Product, Integer> criteria) {
+        this.criteria = criteria;
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public List<Product> getProducts() {
+        return Collections.unmodifiableList(new ArrayList<>(criteria.keySet()));
     }
 
     public void setName(String name) {
@@ -50,38 +69,26 @@ public class ProductQuantityDiscountImpl implements ProductQuantityDiscount {
     }
 
     @Override
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    @Override
-    public Product getProduct() {
-        return product;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductQuantityDiscountImpl that = (ProductQuantityDiscountImpl) o;
         return Objects.equals(value, that.value) &&
-                Objects.equals(product, that.product) &&
-                Objects.equals(quantity, that.quantity) &&
-                Objects.equals(name, that.name);
+                Objects.equals(name, that.name) &&
+                Objects.equals(criteria, that.criteria);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(value, product, quantity, name);
+        return Objects.hash(value, name, criteria);
     }
 
     @Override
     public String toString() {
         return "name='" + name + '\'' +
                 ", value=" + value +
-                ", product=" + product +
-                ", quantity=" + quantity;
+                ", criteria=" + criteria;
 
     }
 }
