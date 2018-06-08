@@ -1,6 +1,8 @@
 package com.antonysohal.supermarket;
 
 import com.antonysohal.supermarket.basket.Basket;
+import com.antonysohal.supermarket.basket.BasketService;
+import com.antonysohal.supermarket.basket.BasketServiceImpl;
 import com.antonysohal.supermarket.discount.DiscountService;
 import com.antonysohal.supermarket.product.ProductService;
 import cucumber.api.java8.En;
@@ -9,6 +11,8 @@ import io.cucumber.datatable.DataTable;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StepsDefs implements En {
+
+    BasketService basketService = BasketServiceImpl.getInstance();
 
     Basket basket;
 
@@ -20,11 +24,11 @@ public class StepsDefs implements En {
 
     Receipt receipt;
 
-
     public StepsDefs() {
 
         Given("^I have shopping basket$", () -> {
-            basket = null;
+            basket = basketService.createBasket();
+            assertThat(basket).isNotNull();
         });
 
         Given("the following products exist:", (DataTable dataTable) -> {
