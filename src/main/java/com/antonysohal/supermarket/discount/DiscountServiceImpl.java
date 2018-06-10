@@ -54,6 +54,14 @@ public class DiscountServiceImpl implements DiscountService {
 
         Map<Product, Integer> criteria = new HashMap<>();
         criteria.put(product, quantity);
+        return createDiscount(name, discountValue, criteria);
+    }
+
+    @Override
+    public Optional<Discount> createDiscount(String name, BigDecimal discountValue, Map<Product, Integer> criteria) {
+        if (discounts.containsKey(name)) {
+            return Optional.empty();
+        }
 
         Discount discount = new ProductQuantityDiscountImpl(name, criteria, discountValue);
         discounts.put(discount.getName(), discount);

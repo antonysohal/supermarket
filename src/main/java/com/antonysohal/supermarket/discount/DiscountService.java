@@ -4,6 +4,7 @@ import com.antonysohal.supermarket.product.Product;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface DiscountService {
@@ -33,4 +34,15 @@ public interface DiscountService {
      * @return the discount or <tt>Optional.EMPTY</tt> if product exist with name passed.
      */
     Optional<Discount> createDiscount(String name, BigDecimal discountValue, Product product, Integer quantity);
+
+
+    /**
+     * Create and add combo discount.
+     *
+     * @param name          unique name of discount
+     * @param discountValue price off
+     * @param criteria      the criteria for discount with product and corresponding quantity
+     * @return the discount or <tt>Optional.EMPTY</tt> if product exist with name passed.
+     */
+    Optional<Discount> createDiscount(String name, BigDecimal discountValue, Map<Product, Integer> criteria);
 }

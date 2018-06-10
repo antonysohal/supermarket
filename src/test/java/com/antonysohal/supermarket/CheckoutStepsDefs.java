@@ -16,13 +16,15 @@ import cucumber.api.java8.En;
 import io.cucumber.datatable.DataTable;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StepsDefs implements En {
+public class CheckoutStepsDefs implements En {
 
     BasketService basketService = BasketServiceImpl.getInstance();
 
@@ -36,7 +38,7 @@ public class StepsDefs implements En {
 
     Receipt receipt;
 
-    public StepsDefs() {
+    public CheckoutStepsDefs() {
 
         Given("^I have shopping basket$", () -> {
             basket = basketService.createBasket();
@@ -62,27 +64,26 @@ public class StepsDefs implements En {
         Given("the following discounts exist:", (DataTable dataTable) -> {
             dataTable.asMaps(String.class, String.class).forEach(
                     row -> {
-
-                        Optional<Product> productOptional = productService.getProduct(row.get("product").toString());
-                        assertThat(productOptional.isPresent()).isTrue();
+                        List<String> productNames = Arrays.asList(row.get("product").toString().split("\\s*,\\s*"));
+                        Map<Product, Integer> criteria = new HashMap<>();
+                        productNames.forEach(productName -> {
+                            Optional<Product> productOptional = productService.getProduct(productName);
+                            assertThat(productOptional.isPresent()).as("Product exists: " + productName).isTrue();
+                            criteria.put(productOptional.get(), Integer.parseInt(row.get("qty").toString()));
+                        });
 
                         Optional<Discount> discountOptional = discountService.createDiscount(
                                 row.get("name").toString(),
                                 new BigDecimal(row.get("discount").toString()),
-                                productOptional.get(),
-                                Integer.parseInt(row.get("qty").toString()));
-
-                        Map<Product, Integer> expectedCriteria = new HashMap<>();
-                        expectedCriteria.put(productOptional.get(), Integer.parseInt(row.get("qty").toString()));
+                                criteria);
 
                         assertThat(discountOptional.isPresent()).isTrue();
                         assertThat(discountOptional.get())
                                 .isNotNull()
                                 .hasFieldOrPropertyWithValue("name", row.get("name").toString())
                                 .hasFieldOrPropertyWithValue("value", new BigDecimal(row.get("discount").toString()))
-                                .hasFieldOrPropertyWithValue("criteria", expectedCriteria);
-                    }
-            );
+                                .hasFieldOrPropertyWithValue("criteria", criteria);
+                    });
         });
 
         Given("I add the following to my basket:", (DataTable dataTable) -> {
@@ -104,8 +105,7 @@ public class StepsDefs implements En {
                         assertThat(basket.getContents())
                                 .filteredOn("name", productName)
                                 .size().isEqualTo(quantity);
-                    }
-            );
+                    });
         });
 
         When("^I checkout$", () -> {
