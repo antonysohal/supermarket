@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface ProductService {
 
     /**
-     * Return all product sold from inventory
+     * Return product sold
      *
      * @return list of products
      */

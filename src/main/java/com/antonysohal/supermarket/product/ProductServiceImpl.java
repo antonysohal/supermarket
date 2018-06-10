@@ -11,7 +11,7 @@ public class ProductServiceImpl implements ProductService {
 
     private static ProductService INSTANCE;
 
-    Map<String, Product> inventory = new HashMap<>();
+    protected Map<String, Product> inventory = new HashMap<>();
 
     public static ProductService getInstance() {
         if (INSTANCE == null) {

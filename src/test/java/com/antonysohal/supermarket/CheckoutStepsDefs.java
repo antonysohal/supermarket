@@ -24,6 +24,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Steps for Checkout Scenario
+ */
 public class CheckoutStepsDefs implements En {
 
     BasketService basketService = BasketServiceImpl.getInstance();
@@ -48,10 +51,11 @@ public class CheckoutStepsDefs implements En {
         Given("the following products exist:", (DataTable dataTable) -> {
             dataTable.asMaps(String.class, String.class).forEach(
                     row -> {
+                        // Create product from Datatable
                         Optional<Product> productOptional = productService.createProduct(row.get("name").toString(),
                                 new BigDecimal(row.get("price").toString()), null);
 
-                        // Test product created
+                        // Test the created products
                         assertThat(productOptional.isPresent()).isTrue();
                         assertThat(productOptional.get())
                                 .isNotNull()
@@ -64,6 +68,7 @@ public class CheckoutStepsDefs implements En {
         Given("the following discounts exist:", (DataTable dataTable) -> {
             dataTable.asMaps(String.class, String.class).forEach(
                     row -> {
+                        // Create the discount from Datatable
                         List<String> productNames = Arrays.asList(row.get("product").toString().split("\\s*,\\s*"));
                         Map<Product, Integer> criteria = new HashMap<>();
                         productNames.forEach(productName -> {
@@ -77,6 +82,7 @@ public class CheckoutStepsDefs implements En {
                                 new BigDecimal(row.get("discount").toString()),
                                 criteria);
 
+                        // Test the discount created
                         assertThat(discountOptional.isPresent()).isTrue();
                         assertThat(discountOptional.get())
                                 .isNotNull()
@@ -89,6 +95,7 @@ public class CheckoutStepsDefs implements En {
         Given("I add the following to my basket:", (DataTable dataTable) -> {
             dataTable.asMaps(String.class, String.class).forEach(
                     row -> {
+                        // Add product to basket from Datatable
                         String productName = row.get("name").toString();
                         Integer quantity = Integer.parseInt(row.get("qty").toString());
 
@@ -102,6 +109,7 @@ public class CheckoutStepsDefs implements En {
                         assertThat(basket.add(productOptional.get(), quantity))
                                 .isNotNull();
 
+                        // Test the product are added to basket
                         assertThat(basket.getContents())
                                 .filteredOn("name", productName)
                                 .size().isEqualTo(quantity);
@@ -109,16 +117,19 @@ public class CheckoutStepsDefs implements En {
         });
 
         When("^I checkout$", () -> {
+            // Checkout
             receipt = checkoutService.checkout(basket);
         });
 
         Then("my total discount should be {double}", (Double expectedDiscount) -> {
+            // Test the output of the checkout is valid
             assertThat(receipt)
                     .isNotNull()
                     .hasFieldOrPropertyWithValue("totalDiscount", BigDecimal.valueOf(expectedDiscount));
         });
 
         Then("my total should be {double}", (Double expectedTotal) -> {
+            // Test the output of the checkout is valid
             assertThat(receipt)
                     .hasFieldOrPropertyWithValue("total", BigDecimal.valueOf(expectedTotal));
         });

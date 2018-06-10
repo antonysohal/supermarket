@@ -28,12 +28,13 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Override
     public Receipt checkout(Basket basket) {
-        List<Discount> applicableDicounts = discountService.getDiscounts(basket.getContents().stream().distinct().collect(Collectors.toList()));
-        Map<Product, Integer> productsWithQuantity = basket.getContents().stream().collect(Collectors.groupingBy(product -> product, Collectors.reducing(0, e -> 1, Integer::sum)));
+        List<Discount> applicableDiscounts = discountService.getDiscounts(basket.getContents().stream().distinct().collect(Collectors.toList()));
+        Map<Product, Integer> productsWithQuantity = basket.getContents().stream()
+                .collect(Collectors.groupingBy(product -> product, Collectors.reducing(0, e -> 1, Integer::sum)));
 
         List<Discount> discountApplied = new ArrayList<>();
 
-        Optional<Discount> discountOptional = applyDiscounts(applicableDicounts, productsWithQuantity).stream().findFirst();
+        Optional<Discount> discountOptional = applyDiscounts(applicableDiscounts, productsWithQuantity).stream().findFirst();
 
         /**
          * Go through each applicable discount
@@ -50,7 +51,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                                 });
                             }
                     );
-            discountOptional = applyDiscounts(applicableDicounts, productsWithQuantity).stream().findFirst();
+            discountOptional = applyDiscounts(applicableDiscounts, productsWithQuantity).stream().findFirst();
         }
 
         return new ReceiptImpl(basket, discountApplied);

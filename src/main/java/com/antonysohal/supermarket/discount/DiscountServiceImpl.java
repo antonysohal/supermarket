@@ -3,8 +3,6 @@ package com.antonysohal.supermarket.discount;
 import com.antonysohal.supermarket.product.Product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -28,10 +26,7 @@ public class DiscountServiceImpl implements DiscountService {
         return INSTANCE;
     }
 
-    /**
-     * @param productList
-     * @return
-     */
+    @Override
     public List<Discount> getDiscounts(List<Product> productList) {
         return discounts.values().stream()
                 .filter(discount ->
@@ -39,11 +34,6 @@ public class DiscountServiceImpl implements DiscountService {
                                 .anyMatch(product -> productList.contains(product)))
                 .sorted(Comparator.comparing(Discount::getValue).reversed())
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Discount> getDiscounts() {
-        return Collections.unmodifiableList(new ArrayList<>(discounts.values()));
     }
 
     @Override

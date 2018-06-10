@@ -11,7 +11,7 @@ import java.util.List;
  */
 class BasketImpl implements Basket {
 
-    List<Product> basket = new ArrayList<>();
+    protected List<Product> basket = new ArrayList<>();
 
     BasketImpl() {
     }

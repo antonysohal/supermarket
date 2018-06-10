@@ -10,13 +10,6 @@ import java.util.Optional;
 public interface DiscountService {
 
     /**
-     * Return all discounts
-     *
-     * @return discounts
-     */
-    List<Discount> getDiscounts();
-
-    /**
      * Return all discount for the list of product passed
      *
      * @param productList the product

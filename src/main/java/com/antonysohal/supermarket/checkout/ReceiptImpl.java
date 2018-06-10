@@ -23,7 +23,7 @@ class ReceiptImpl implements Receipt {
     }
 
     private void calculate() {
-        Double totalDis = discountsApplied.stream().collect(Collectors.summingDouble(d -> d.getValue().doubleValue()));
+        Double totalDis = discountsApplied.stream().mapToDouble(d -> d.getValue().doubleValue()).sum();
         Double totalCost = basket.getContents().stream().collect(Collectors.summingDouble(p -> p.getPrice().doubleValue()));
         setTotalDiscount(BigDecimal.valueOf(totalDis).setScale(2, RoundingMode.HALF_EVEN));
         setTotalCostOfProducts(BigDecimal.valueOf(totalCost).setScale(2, RoundingMode.HALF_EVEN));

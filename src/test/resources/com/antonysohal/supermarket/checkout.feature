@@ -21,23 +21,23 @@ Feature: Checkout
     And my total should be 8.45
 
 
-     Scenario: Apply quantity discount for combo products
-       Given I have shopping basket
-       And the following products exist:
-         | name        | price  |
-         | Starter     | 2.79   |
-         | Main Course | 6.49   |
-         | Dessert     | 1.99   |
-         | 3 x Beer    | 4.99   |
-       And the following discounts exist:
-         | name                  | product                                  | qty | discount |
-         | Meal for 2 for £10    | Starter, Main Course, Dessert, 3 x Beer  | 1   | -6.26    |
-       And I add the following to my basket:
-         | name        | qty |
-         | Starter     | 1   |
-         | Main Course | 1   |
-         | Dessert     | 1   |
-         | 3 x Beer    | 2   |
-       When I checkout
-       Then my total discount should be -6.26
-       And my total should be 14.99
+  Scenario: Apply quantity discount for combo products
+    Given I have shopping basket
+    And the following products exist:
+      | name        | price  |
+      | Starter     | 2.79   |
+      | Main Course | 6.49   |
+      | Dessert     | 1.99   |
+      | 3 x Beer    | 4.99   |
+    And the following discounts exist:
+      | name                  | product                                  | qty | discount |
+      | Meal for 2 for £10    | Starter, Main Course, Dessert, 3 x Beer  | 1   | -6.26    |
+    And I add the following to my basket:
+      | name        | qty |
+      | Starter     | 1   |
+      | Main Course | 1   |
+      | Dessert     | 1   |
+      | 3 x Beer    | 2   |
+    When I checkout
+    Then my total discount should be -6.26
+    And my total should be 14.99

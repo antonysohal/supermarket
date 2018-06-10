@@ -80,7 +80,6 @@ class ProductQuantityDiscountImpl implements Discount {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(value, name, criteria);
     }
 
